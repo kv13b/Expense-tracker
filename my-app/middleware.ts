@@ -1,14 +1,24 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth } from "./lib/auth";
 
-export default clerkMiddleware({
-  // publicRoutes:[]
-});
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("user-token")?.value;
+  const verifiedToken =
+    token &&
+    (await verifyAuth(token).catch(({ err }: { err: string }) => {
+      console.log(err);
+    }));
+  if (req.nextUrl.pathname.startsWith("/login") && !verifiedToken) {
+    return;
+  }
+  if (req.url.includes("/login") && verifiedToken) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+  if (!verifiedToken) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+}
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/dashboard"],
 };
