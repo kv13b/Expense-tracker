@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAuth } from "./lib/auth";
+import { verifyJWT } from "./app/lib/auth";
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("user-token")?.value;
   const verifiedToken =
     token &&
-    (await verifyAuth(token).catch(({ err }: { err: string }) => {
+    (await verifyJWT(token).catch(({ err }: { err: string }) => {
       console.log(err);
     }));
   if (req.nextUrl.pathname.startsWith("/login") && !verifiedToken) {
