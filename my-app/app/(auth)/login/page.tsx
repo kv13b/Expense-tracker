@@ -1,7 +1,33 @@
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setUsername(data.user.username);
+      localStorage.setItem("username", data.user);
+      console.log("data stored to local", data.user);
+      router.push("/dashboard");
+    } else {
+      const data = await res.json();
+      alert(data.error || "Login failed");
+    }
+  };
+
   return (
     <div className="flex h-screen">
       {/* Left side with image */}
@@ -18,16 +44,15 @@ export default function Login() {
       {/* Right side: Login Form */}
       <div className="lg:p-36 md:p-52 sm:p-20 p-8 w-full lg:w-1/2">
         <h1 className="text-2xl font-semibold mb-4">Login</h1>
-        <form action="#" method="POST">
+        <form onSubmit={handleLogin}>
           {/* Username Input */}
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-600">
-              Username
-            </label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              name="username"
+              id="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
               autoComplete="off"
             />
@@ -42,6 +67,8 @@ export default function Login() {
               type="password"
               id="password"
               name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
               autoComplete="off"
             />

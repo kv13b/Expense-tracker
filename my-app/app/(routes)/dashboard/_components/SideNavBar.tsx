@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutGrid, PiggyBank, ReceiptText, ShieldCheck } from "lucide-react";
-import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-function SideNavBar() {
+
+async function SideNavBar() {
   const menuList = [
     {
       id: 1,
@@ -54,9 +54,13 @@ function SideNavBar() {
           </Link>
         ))}
       </div>
-      <div className="fixed bottom-10 p-5 flex gap-2 items-center cursor-pointer rounded-md hover:text-primary hover:bg-blue-200">
-        <UserButton />
-        Profile
+      <div className="flex flex-row items-center">
+        <div
+          className="border bodrder-gray-200 p-2 rounded-[50%] inline-block hover:text-primary hover:bg-blue-200"
+          style={{ width: "50px", height: "50px" }}
+        >
+          <Image src="/user.png" width={40} height={20} alt="profile-pic" />
+        </div>
       </div>
     </div>
   );
