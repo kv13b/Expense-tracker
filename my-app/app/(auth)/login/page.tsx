@@ -27,6 +27,12 @@ export default function Login() {
       alert(data.error || "Login failed");
     }
   };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key == "enter") {
+      e.preventDefault();
+      handleLogin(e as any);
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -69,6 +75,7 @@ export default function Login() {
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
               autoComplete="off"
             />

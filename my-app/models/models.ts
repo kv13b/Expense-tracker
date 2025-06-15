@@ -1,7 +1,6 @@
 import dynamoose from "@/app/lib/dynamoose";
 const { Schema, model } = dynamoose;
 
-// Define schema WITHOUT manually declaring timestamp fields
 const userSchema = new Schema({
   id: {
     type: String,
@@ -17,6 +16,28 @@ const userSchema = new Schema({
   },
   password: String,
 });
-
-// Create model (auto-creates the table)
+//expense main tb
+const expenseSchema = new Schema({
+  userId: {
+    type: String,
+    hashKey: true,
+  },
+  expenseId: {
+    type: String,
+    rangeKey: true,
+  },
+  amount: Number,
+  currency: {
+    type: String,
+    default: "USD",
+  },
+  date: String,
+  category: String,
+  paymentMethod: String,
+  description: String,
+  createdAt: String,
+  updatedAt: String,
+  imageUrl: String, //future purpose
+});
+export const Expense = model("Expenses", expenseSchema);
 export const User = model("Users", userSchema);
