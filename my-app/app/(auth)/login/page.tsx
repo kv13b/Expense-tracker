@@ -20,7 +20,8 @@ export default function Login() {
       const data = await res.json();
       setUsername(data.user.username);
       localStorage.setItem("username", data.user);
-      console.log("data stored to local", data.user);
+      localStorage.setItem("userid", data.userid);
+      console.log("data stored to local", data.user, data.userid);
       router.push("/dashboard");
     } else {
       const data = await res.json();
