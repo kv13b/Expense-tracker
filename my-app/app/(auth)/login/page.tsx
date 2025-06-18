@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-
+import { setCookie } from "cookies-next/client";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,10 +18,15 @@ export default function Login() {
     });
     if (res.ok) {
       const data = await res.json();
-      setUsername(data.user.username);
-      localStorage.setItem("username", data.user);
-      localStorage.setItem("userid", data.userid);
-      console.log("data stored to local", data.user, data.userid);
+      setUsername(data.username);
+      console.log(data, "thhis is thre res");
+      setCookie("username", data.user, { path: "/" });
+      setCookie("userid", data.userid, { path: "/" });
+      console.log(
+        "data stored in cookies",
+        data.user.username,
+        data.user.userid
+      );
       router.push("/dashboard");
     } else {
       const data = await res.json();

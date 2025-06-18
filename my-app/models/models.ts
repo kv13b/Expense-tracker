@@ -29,12 +29,11 @@ const expenseSchema = new Schema({
   amount: Number,
   currency: {
     type: String,
-    default: "USD",
+    default: "INR",
   },
+  name: String,
   date: String,
-  category: String,
-  paymentMethod: String,
-  description: String,
+  icon: String,
   createdAt: String,
   updatedAt: String,
   imageUrl: String, //future purpose

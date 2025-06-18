@@ -6,13 +6,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import EmojiPicker from "emoji-picker-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-
+import { getCookie } from "cookies-next/client";
 function CreateBudget() {
   const [EmojiIcon, setEmojiIcon] = useState("😀");
   const [OpenEmojiPicker, setOpenEmojiPicker] = useState(false);
@@ -21,7 +23,9 @@ function CreateBudget() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const userid = getCookie("userid");
     const data = {
+      userid,
       Name,
       amount: parseFloat(amount),
       icon: EmojiIcon,
@@ -39,7 +43,6 @@ function CreateBudget() {
       }
       setName("");
       setAmount("");
-      setCategory("");
       setEmojiIcon("😀");
       setOpenEmojiPicker(false);
       toast("Budget created successfully");
@@ -95,14 +98,27 @@ function CreateBudget() {
                   type="number"
                   placeholder="Ex:$5000"
                   onChange={(e) => setAmount(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && Name && amount) {
+                      handleSubmit(e);
+                    }
+                  }}
                 />
               </div>
-              <Button disabled={!(Name && amount)} className="mt-5 w-full">
-                Create Budget
-              </Button>
             </div>
           </DialogDescription>
         </DialogHeader>
+        <DialogFooter>
+          <DialogClose aschild>
+            <Button
+              disabled={!(Name && amount)}
+              className="mt-5 w-full"
+              onClick={handleSubmit}
+            >
+              Create Budget
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
-
+import { getCookie } from "cookies-next/client";
 function DashBoardHeader() {
-  const username = localStorage.getItem("username");
+  const username = getCookie("username");
 
   return (
     <div className="p-5 shadow-sm border-b flex justify-between">
