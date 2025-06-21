@@ -19,7 +19,7 @@ function CreateBudget() {
   const [EmojiIcon, setEmojiIcon] = useState("😀");
   const [OpenEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [Name, setName] = useState("");
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +52,7 @@ function CreateBudget() {
     }
   };
   return (
-    <Dialog aschild>
+    <Dialog>
       <DialogTrigger>
         {" "}
         <div>
@@ -109,7 +109,7 @@ function CreateBudget() {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose aschild>
+          <DialogClose>
             <Button
               disabled={!(Name && amount)}
               className="mt-5 w-full"

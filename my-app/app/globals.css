@@ -121,3 +121,8 @@
     @apply bg-background text-foreground;
   }
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: 147 197 253; /* RGB for blue-300 in dark mode */
+  }
+}

@@ -5,7 +5,7 @@ import { LayoutGrid, PiggyBank, ReceiptText, ShieldCheck } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-async function SideNavBar() {
+function SideNavBar() {
   const menuList = [
     {
       id: 1,
@@ -35,13 +35,13 @@ async function SideNavBar() {
   const path = usePathname();
   useEffect(() => {
     console.log(path);
-  });
+  }, []);
   return (
     <div className="h-screen p-5 border shadow-sm">
       <Image src={"/logo.svg"} alt="logo" height={100} width={120} />
       <div className="mt-5">
         {menuList.map((menu, index) => (
-          <Link href={menu.path}>
+          <Link key={menu.path} href={menu.path}>
             <h2
               className={`flex gap-2 items-center text-gray-700 font-medium mb-2 p-5 cursor-pointer rounded-md
           hover:text-primary hover:bg-blue-200 ${

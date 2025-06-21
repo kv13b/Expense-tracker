@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { setCookie } from "cookies-next/client";
+import { toast } from "sonner";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +32,7 @@ export default function Login() {
       router.push("/dashboard");
     } else {
       const data = await res.json();
-      alert(data.error || "Login failed");
+      toast(data.error || "Login failed");
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {

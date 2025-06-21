@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function Login() {
       body: JSON.stringify(formData),
     });
     const data = await res.json();
-    alert(data.message);
+    toast(data.message);
   };
 
   return (
