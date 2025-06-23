@@ -15,12 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { getCookie } from "cookies-next/client";
-function CreateBudget() {
+function CreateBudget({ refreshData }) {
   const [EmojiIcon, setEmojiIcon] = useState("😀");
   const [OpenEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [Name, setName] = useState("");
   const [amount, setAmount] = useState("");
-
+  const [open, setOpen] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userid = getCookie("userid");
@@ -45,6 +45,8 @@ function CreateBudget() {
       setAmount("");
       setEmojiIcon("😀");
       setOpenEmojiPicker(false);
+      setOpen(false);
+      refreshData();
       toast("Budget created successfully");
     } catch (error) {
       console.error("Budget creation error:", error);
@@ -52,9 +54,8 @@ function CreateBudget() {
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
-        {" "}
         <div>
           <div
             className="bg-slate-100 p-10 rounded-md items-center flex flex-col border-2 border-dashed
@@ -76,7 +77,7 @@ function CreateBudget() {
               >
                 {EmojiIcon}
               </Button>
-              <div className="absolute">
+              <div className="absolute z-20">
                 <EmojiPicker
                   open={OpenEmojiPicker}
                   onEmojiClick={(e) => {
@@ -96,7 +97,7 @@ function CreateBudget() {
                 <h2 className="text-black font-medium my-1">Budget Amount</h2>
                 <Input
                   type="number"
-                  placeholder="Ex:$5000"
+                  placeholder="Ex:₹5000"
                   onChange={(e) => setAmount(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && Name && amount) {
@@ -109,7 +110,7 @@ function CreateBudget() {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose>
+          <DialogClose asChild>
             <Button
               disabled={!(Name && amount)}
               className="mt-5 w-full"
