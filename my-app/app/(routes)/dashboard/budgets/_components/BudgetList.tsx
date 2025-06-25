@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import CreateBudget from "./CreateBudget";
 import { getCookie } from "cookies-next/client";
-import { json } from "stream/consumers";
 import BudgetItem from "./BudgetItem";
 
 function BudgetList() {

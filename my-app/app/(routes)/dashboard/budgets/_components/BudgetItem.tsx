@@ -1,14 +1,19 @@
+import Link from "next/link";
 import React from "react";
 
 type Budget = {
   icon: string;
   name: string;
   amount: string;
+  expenseId: string;
 };
 function BudgetItem({ budget }: { budget: Budget }) {
   console.log("in bgitme", budget);
   return (
-    <div className="p-5 border rounded-lg hover:shadow-md cursor-pointer">
+    <Link
+      href={"/dashboard/expenses/" + budget.expenseId}
+      className="p-5 border rounded-lg hover:shadow-md cursor-pointer h-[170px]"
+    >
       <div className="flex gap-2 item-center justify-between">
         <div className="flex gap-2 item-center">
           <h2 className="text-2xl p-3 px-4 bg-slate-100 rounded-full">
@@ -27,7 +32,7 @@ function BudgetItem({ budget }: { budget: Budget }) {
           <div className="w-[40%] bg-primary h-2 rounded-full"></div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
