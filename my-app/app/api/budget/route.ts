@@ -1,4 +1,4 @@
-import { Expense } from "../../../models/models";
+import { Budget } from "../../../models/models";
 import { v4 as uuidv4 } from "uuid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
   }
   try {
-    const data = await Expense.query("userId").eq(userId).exec();
+    const data = await Budget.query("userId").eq(userId).exec();
     return NextResponse.json({ data });
   } catch (error) {
     console.log("error while fetching data", error);
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   console.log("this is the res", body);
   const { Name, amount, icon, userid } = body;
 
-  const expense = new Expense({
+  const budget = new Budget({
     userId: userid,
     expenseId: uuidv4(),
     name: Name,
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     updatedAt: new Date().toISOString(),
   });
   console.log("passed the model");
-  await expense.save();
+  await budget.save();
 
-  return NextResponse.json({ message: "Saved successfully", expense });
+  return NextResponse.json({ message: "Saved successfully", budget });
 }

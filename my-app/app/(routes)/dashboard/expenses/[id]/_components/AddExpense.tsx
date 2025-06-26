@@ -1,12 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getCookie } from "cookies-next/client";
 import React, { useState } from "react";
-type BudgetId = {
-  id: string;
-};
-function AddExpense({ BudgetId }: { BudgetId: BudgetId }) {
+import { toast } from "sonner";
+function AddExpense({ BudgetId }: { BudgetId: string }) {
   const [Name, setName] = useState("");
   const [amount, setAmount] = useState("");
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const userid = getCookie("userid");
+    const data = {
+      userid,
+      Name,
+      amount: parseFloat(amount),
+      BudgetId: BudgetId,
+    };
+    try {
+      const response = await fetch("/api/SingleBudgetInfo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast(errorData.error || "Failed to create Expense");
+        return;
+      }
+      setName("");
+      setAmount("");
+      toast("Expense created successfully");
+    } catch (error) {
+      console.error("Expense creation error:", error);
+      toast("An error occurred while creating Expense");
+    }
+  };
+
   return (
     <div className="border p-5 rounded-lg">
       <h2 className="font font-bold text-lg">Add Expense</h2>
@@ -23,10 +51,19 @@ function AddExpense({ BudgetId }: { BudgetId: BudgetId }) {
           <Input
             placeholder="Ex:₹6000"
             onChange={(e) => setAmount(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && Name && amount) {
+                handleSubmit(e);
+              }
+            }}
           />
         </div>
       </div>
-      <Button disabled={!(Name && amount)} className="mt-3 w-full">
+      <Button
+        disabled={!(Name && amount)}
+        className="mt-3 w-full"
+        onClick={handleSubmit}
+      >
         Add Expense
       </Button>
     </div>

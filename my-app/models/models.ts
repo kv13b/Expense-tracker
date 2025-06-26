@@ -16,8 +16,8 @@ const userSchema = new Schema({
   },
   password: String,
 });
-//expense main tb
-const expenseSchema = new Schema({
+//budget main tb
+const BudgetSchema = new Schema({
   userId: {
     type: String,
     hashKey: true,
@@ -36,7 +36,29 @@ const expenseSchema = new Schema({
   icon: String,
   createdAt: String,
   updatedAt: String,
+});
+const ExpenseSchema = new Schema({
+  userId: {
+    type: String,
+    hashKey: true,
+  },
+  SingleExpenseId: {
+    type: String,
+    rangeKey: true,
+  },
+  BudgetId: String,
+  amount: Number,
+  currency: {
+    type: String,
+    default: "INR",
+  },
+  name: String,
+  date: String,
+  icon: String,
+  createdAt: String,
+  updatedAt: String,
   imageUrl: String, //future purpose
 });
-export const Expense = model("Expenses", expenseSchema);
+export const Expense = model("Expense", ExpenseSchema);
+export const Budget = model("Budgets", BudgetSchema);
 export const User = model("Users", userSchema);
