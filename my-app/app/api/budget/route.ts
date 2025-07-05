@@ -1,4 +1,4 @@
-import { Budget } from "../../../models/models";
+import { Budget, Expense } from "../../../models/models";
 import { v4 as uuidv4 } from "uuid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,7 +9,57 @@ export async function GET(req: NextRequest) {
   }
   try {
     const data = await Budget.query("userId").eq(userId).exec();
-    return NextResponse.json({ data });
+    const budgets = await Budget.query("userId").eq(userId).exec(); //list of budgets
+    const expenses = await Expense.query("userId").eq(userId).exec(); //list of expense
+    const budgetMap = budgets.reduce((acc, budget) => {
+      acc[budget.expenseId] = budget;
+      return acc;
+    }, {} as Record<string, (typeof budgets)[0]>);
+    console.log("this is acc", budgetMap);
+
+    const joinExpense = expenses.map((expense) => {
+      const relatedBudget = budgetMap[expense.BudgetId];
+      return {
+        ...expense,
+        budgetName: relatedBudget?.name || null,
+        budgetIcon: relatedBudget?.icon || null,
+        budgetAmount: relatedBudget?.amount || null,
+        budgetDate: relatedBudget?.date || null,
+      };
+    });
+    console.log("this is the mapped data", joinExpense);
+
+    const budgetTotals = joinExpense.reduce(
+      (acc, expense) => {
+        const id = expense.BudgetId;
+        if (!acc[id]) {
+          acc[id] = {
+            totalSpent: 0,
+            name: expense.budgetName,
+            icon: expense.budgetIcon,
+            amount: expense.budgetAmount,
+            expenseId: id,
+          };
+        }
+        acc[id].totalSpent += expense.amount;
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          totalSpent: number;
+          name: string;
+          icon: string;
+          amount: number;
+          expenseId: string;
+        }
+      >
+    );
+    const budgetSummaryArray = Object.values(budgetTotals);
+
+    console.log("this is the parti expense", budgetSummaryArray);
+    console.log("this is data", data);
+    return NextResponse.json({ data: budgetSummaryArray });
   } catch (error) {
     console.log("error while fetching data", error);
     return NextResponse.json(

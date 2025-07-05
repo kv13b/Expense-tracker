@@ -6,9 +6,10 @@ type Budget = {
   name: string;
   amount: string;
   expenseId: string;
+  totalSpent: string;
 };
 function BudgetItem({ budget }: { budget: Budget }) {
-  console.log("in bgitme", budget);
+  console.log("in bg itme", budget);
   return (
     <Link
       href={"/dashboard/expenses/" + budget.expenseId}
@@ -25,11 +26,19 @@ function BudgetItem({ budget }: { budget: Budget }) {
       </div>
       <div className="mt-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs text-slate-400">₹0</h2>
-          <h2 className="text-xs text-slate-400">₹0</h2>
+          <h2 className="text-xs text-slate-400">₹{budget.totalSpent}</h2>
+          <h2 className="text-xs text-slate-400">₹{budget.amount}</h2>
         </div>
         <div className="w-full bg-slate-300 h-2 rounded-full">
-          <div className="w-[40%] bg-primary h-2 rounded-full"></div>
+          <div
+            className="bg-primary h-2 rounded-full"
+            style={{
+              width: `${Math.min(
+                (Number(budget.totalSpent) / Number(budget.amount)) * 100,
+                100
+              )}%`,
+            }}
+          ></div>
         </div>
       </div>
     </Link>
