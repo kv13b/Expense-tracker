@@ -46,7 +46,14 @@ const ExpenseSchema = new Schema({
     type: String,
     rangeKey: true,
   },
-  BudgetId: String,
+  BudgetId: {
+    type: String,
+    index: {
+      name: "BudgetIndex",
+      type: "global",
+      project: true,
+    },
+  },
   amount: Number,
   currency: {
     type: String,

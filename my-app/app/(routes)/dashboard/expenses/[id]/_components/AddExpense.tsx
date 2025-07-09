@@ -3,7 +3,13 @@ import { Input } from "@/components/ui/input";
 import { getCookie } from "cookies-next/client";
 import React, { useState } from "react";
 import { toast } from "sonner";
-function AddExpense({ BudgetId }: { BudgetId: string }) {
+function AddExpense({
+  BudgetId,
+  onExpenseAdded,
+}: {
+  BudgetId: string;
+  onExpenseAdded: () => void;
+}) {
   const [Name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const handleSubmit = async (e: any) => {
@@ -29,6 +35,7 @@ function AddExpense({ BudgetId }: { BudgetId: string }) {
       setName("");
       setAmount("");
       toast("Expense created successfully");
+      onExpenseAdded();
     } catch (error) {
       console.error("Expense creation error:", error);
       toast("An error occurred while creating Expense");

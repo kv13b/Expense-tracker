@@ -12,7 +12,19 @@ export async function GET(req: NextRequest) {
   }
   try {
     const data = await Budget.get({ userId, expenseId });
-    return NextResponse.json({ data });
+    const expenses = await Expense.scan("userId").eq(userId).exec();
+    const filtered = expenses.filter((e) => e.BudgetId === expenseId);
+    const totalSpent = filtered.reduce(
+      (acc, expense) => acc + Number(expense.amount),
+      0
+    );
+    const enhacedData = {
+      ...data,
+      totalSpent,
+    };
+    console.log("this is the data", data);
+    console.log("this is the expense of that parti data", enhacedData);
+    return NextResponse.json({ data: enhacedData });
   } catch (error) {
     console.log("error while fetching data", error);
     return NextResponse.json(
