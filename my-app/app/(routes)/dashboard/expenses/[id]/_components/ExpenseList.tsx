@@ -7,20 +7,31 @@ type ExpenseItem = {
   name: string;
   amount: string;
 };
-const DeleteExpense = async (expense: any) => {
-  const userid = getCookie("userid");
-  console.log(expense.SingleExpenseId);
-  try {
-    await fetch(
-      `/api/expense?userId=${userid}&expenseId=${expense.SingleExpenseId}`
-    );
-  } catch (err) {
-    console.log(err);
-    toast("Coudnt delete the expense");
-  }
-};
 
-const ExpenseList = ({ expenses }: { expenses: ExpenseItem[] }) => {
+const ExpenseList = ({
+  expenses,
+  onLoad,
+}: {
+  expenses: ExpenseItem[];
+  onLoad: () => void;
+}) => {
+  const DeleteExpense = async (expense: any) => {
+    const userid = getCookie("userid");
+    console.log(expense.SingleExpenseId);
+    try {
+      await fetch(
+        `/api/expense?userId=${userid}&expenseId=${expense.SingleExpenseId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      toast("Expense deleted successfully");
+      onLoad();
+    } catch (err) {
+      console.log(err);
+      toast("Coudnt delete the expense");
+    }
+  };
   return (
     <div className="mt-3">
       <div className="grid grid-cols-4 bg-slate-200 p-2">

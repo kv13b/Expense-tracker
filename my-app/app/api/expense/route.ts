@@ -34,7 +34,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
   }
   try {
-    await Expense.delete({ userId, expenseId });
+    await Expense.delete({ userId: userId, SingleExpenseId: expenseId });
     return NextResponse.json({ message: "Deleted Successfully" });
   } catch (err) {
     console.log(err);

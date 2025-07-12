@@ -126,3 +126,27 @@
     --color-primary: 147 197 253; /* RGB for blue-300 in dark mode */
   }
 }
+
+@layer utilities {
+  @keyframes typewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid black;
+    white-space: nowrap;
+    animation: typewriter 3s steps(30, end) 1s 1 normal both,
+      blink 0.7s step-end infinite;
+  }
+}

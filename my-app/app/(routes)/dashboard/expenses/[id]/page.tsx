@@ -56,7 +56,7 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
       </div>
       <div className="mt-4">
         <h2 className="font-bold text-lg">All Your Expenses</h2>
-        <ExpenseList expenses={expenseList} />
+        <ExpenseList expenses={expenseList} onLoad={fetchBudgets} />
       </div>
     </div>
   );
