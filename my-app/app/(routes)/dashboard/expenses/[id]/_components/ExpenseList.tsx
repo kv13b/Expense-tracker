@@ -11,9 +11,11 @@ type ExpenseItem = {
 const ExpenseList = ({
   expenses,
   onLoad,
+  RefreshExpense,
 }: {
   expenses: ExpenseItem[];
   onLoad: () => void;
+  RefreshExpense: () => void;
 }) => {
   const DeleteExpense = async (expense: any) => {
     const userid = getCookie("userid");
@@ -27,6 +29,7 @@ const ExpenseList = ({
       );
       toast("Expense deleted successfully");
       onLoad();
+      RefreshExpense();
     } catch (err) {
       console.log(err);
       toast("Coudnt delete the expense");

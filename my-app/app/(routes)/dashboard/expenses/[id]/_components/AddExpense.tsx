@@ -6,9 +6,11 @@ import { toast } from "sonner";
 function AddExpense({
   BudgetId,
   onExpenseAdded,
+  RefreshExpense,
 }: {
   BudgetId: string;
   onExpenseAdded: () => void;
+  RefreshExpense: () => void;
 }) {
   const [Name, setName] = useState("");
   const [amount, setAmount] = useState("");
@@ -33,9 +35,10 @@ function AddExpense({
         return;
       }
       setName("");
-      setAmount("");
+      setAmount(" ");
       toast("Expense created successfully");
       onExpenseAdded();
+      RefreshExpense();
     } catch (error) {
       console.error("Expense creation error:", error);
       toast("An error occurred while creating Expense");

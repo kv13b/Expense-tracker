@@ -5,7 +5,19 @@ import BudgetItem from "../../budgets/_components/BudgetItem";
 import AddExpense from "./_components/AddExpense";
 import ExpenseList from "./_components/ExpenseList";
 import { use } from "react";
-
+import { Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 type ExpenseParams = {
   id: string;
 };
@@ -43,20 +55,58 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
       console.log(err);
     }
   };
+  const deleteBudget = async () => {};
   return (
     <div className="p-10">
-      <h2 className="text-2xl font-bold">My Expense</h2>
+      <h2 className="text-2xl font-bold flex justify-between items-center">
+        My Expense
+        <span>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button
+                className="my-2 flex gap-2 cursor-pointer"
+                variant="destructive"
+              >
+                <Trash /> Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permenatly delete the current budget along with the
+                  expenseList
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => deleteBudget()}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </span>
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-5">
         {budgetList ? (
           <BudgetItem budget={budgetList} />
         ) : (
           <div className="h-[150px] w-full bg-slate-200 rounded-lg animate-pulse"></div>
         )}
-        <AddExpense BudgetId={id} onExpenseAdded={fetchBudgets} />
+        <AddExpense
+          BudgetId={id}
+          onExpenseAdded={fetchBudgets}
+          RefreshExpense={GetExpenseList}
+        />
       </div>
       <div className="mt-4">
         <h2 className="font-bold text-lg">All Your Expenses</h2>
-        <ExpenseList expenses={expenseList} onLoad={fetchBudgets} />
+        <ExpenseList
+          expenses={expenseList}
+          onLoad={fetchBudgets}
+          RefreshExpense={GetExpenseList}
+        />
       </div>
     </div>
   );

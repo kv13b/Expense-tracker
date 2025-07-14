@@ -1,6 +1,8 @@
 import { Budget, Expense } from "../../../models/models";
 import { v4 as uuidv4 } from "uuid";
 import { NextRequest, NextResponse } from "next/server";
+import { error } from "console";
+import dynamoose from "@/app/lib/dynamoose";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
@@ -87,4 +89,46 @@ export async function POST(req: Request) {
   await budget.save();
 
   return NextResponse.json({ message: "Saved successfully", budget });
+}
+export async function DELETE(req: NextRequest) {
+  const userId = req.nextUrl.searchParams.get("userId");
+  const expenseId = req.nextUrl.searchParams.get("expenseId");
+  if (!userId || !expenseId) {
+    return NextResponse.json({ error: "Missing Parameters" }, { status: 400 });
+  }
+  try {
+    const ddb = dynamoose.aws.ddb();
+    const allExpense = await Expense.scan("userId").eq(userId).exec();
+
+    const relatedExp = allExpense.filter((item) => item.BudgetId === expenseId);
+
+    const deleteOperations = relatedExp.map((expense) => ({
+      Delete: {
+        TableName: Expense.modelName,
+        Key: {
+          userId: expense.userId,
+          SingleExpenseId: expense.SingleExpenseId,
+        },
+      },
+    }));
+    deleteOperations.push({
+      Delete: {
+        TableName: Budget.modelName,
+        Key: {
+          userId,
+          expenseId,
+        },
+      },
+    });
+    await dynamoose.transaction(deleteOperations);
+    return NextResponse.json({
+      message: "Budget and its related expenses (if any) deleted successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: "Transaction failed while deleting" },
+      { status: 500 }
+    );
+  }
 }
