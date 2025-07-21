@@ -43,8 +43,7 @@ To run this project, you will need to add the following environment variables to
 
  - [Access keys from Aws](https://medium.com/@mudasirhaji/how-to-create-an-aws-iam-user-a-step-by-step-guide-39d2a07a1670)
 
-
-
+ - [Create a GSI for BudgetId in Expense Table](https://medium.com/@jun711.g/create-secondary-indexes-for-aws-dynamodb-to-prevent-scanning-3b210b2764bf)
 
 ## Documentation
 
