@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 type ExpenseParams = {
   id: string;
 };
@@ -55,7 +56,24 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
       console.log(err);
     }
   };
-  const deleteBudget = async () => {};
+  const deleteBudget = async () => {
+    try {
+      const userId = getCookie("userid");
+      const res = await fetch(`/api/budget?userId=${userId}&expenseId=${id}`, {
+        method: "DELETE",
+      });
+      const result = await res.json();
+      if (result.ok) {
+        toast("Deleted the budget successully");
+        window.location.href = "/budgets";
+      } else {
+        toast("Failed to delete the budget", result);
+      }
+    } catch (err) {
+      console.log(err);
+      // toast(err);
+    }
+  };
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold flex justify-between items-center">

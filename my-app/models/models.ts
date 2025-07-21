@@ -49,7 +49,7 @@ const ExpenseSchema = new Schema({
   BudgetId: {
     type: String,
     index: {
-      name: "BudgetIndex",
+      name: "BudgetId-index",
       type: "global",
       project: true,
     },
@@ -66,6 +66,10 @@ const ExpenseSchema = new Schema({
   updatedAt: String,
   imageUrl: String, //future purpose
 });
-export const Expense = model("Expense", ExpenseSchema);
-export const Budget = model("Budgets", BudgetSchema);
+export const Expense = model("Expense", ExpenseSchema, {
+  tableName: "Expense",
+});
+export const Budget = model("Budgets", BudgetSchema, {
+  tableName: "Budgets",
+});
 export const User = model("Users", userSchema);

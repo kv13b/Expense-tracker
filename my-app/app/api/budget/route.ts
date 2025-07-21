@@ -91,36 +91,51 @@ export async function POST(req: Request) {
   return NextResponse.json({ message: "Saved successfully", budget });
 }
 export async function DELETE(req: NextRequest) {
+  console.log("Budget model name:", Budget.name);
+  console.log("Expense model name:", Expense.name);
+
   const userId = req.nextUrl.searchParams.get("userId");
   const expenseId = req.nextUrl.searchParams.get("expenseId");
   if (!userId || !expenseId) {
     return NextResponse.json({ error: "Missing Parameters" }, { status: 400 });
   }
   try {
-    const ddb = dynamoose.aws.ddb();
-    const allExpense = await Expense.scan("userId").eq(userId).exec();
+    // const ddb = dynamoose.aws.ddb();
+    // const allExpense = await Expense.scan("userId").eq(userId).exec();
 
-    const relatedExp = allExpense.filter((item) => item.BudgetId === expenseId);
+    // const relatedExp = allExpense.filter((item) => item.BudgetId === expenseId);
 
-    const deleteOperations = relatedExp.map((expense) => ({
-      Delete: {
-        TableName: Expense.modelName,
-        Key: {
-          userId: expense.userId,
-          SingleExpenseId: expense.SingleExpenseId,
-        },
-      },
-    }));
-    deleteOperations.push({
-      Delete: {
-        TableName: Budget.modelName,
-        Key: {
-          userId,
-          expenseId,
-        },
-      },
-    });
-    await dynamoose.transaction(deleteOperations);
+    // const deleteOperations = relatedExp.map((expense) => ({
+    //   Delete: {
+    //     TableName: Expense.name,
+    //     Key: {
+    //       userId: expense.userId,
+    //       SingleExpenseId: expense.SingleExpenseId,
+    //     },
+    //   },
+    // }));
+    // deleteOperations.push({
+    //   Delete: {
+    //     TableName: Budget.name,
+    //     Key: {
+    //       userId,
+    //       expenseId,
+    //     },
+    //   },
+    // });
+    // await dynamoose.transaction(deleteOperations);
+    const budgetDeleteOp = Budget.transaction.delete({ userId, expenseId });
+
+    const expenseItems = await Expense.query("BudgetId").eq(expenseId).exec();
+
+    const expenseDeleteOps = (expenseItems || []).map((item) =>
+      Expense.transaction.delete({
+        userId: item.userId,
+        SingleExpenseId: item.SingleExpenseId,
+      })
+    );
+
+    const deleteOperations = [budgetDeleteOp, ...expenseDeleteOps];
     return NextResponse.json({
       message: "Budget and its related expenses (if any) deleted successfully",
     });
