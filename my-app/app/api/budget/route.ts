@@ -1,7 +1,6 @@
 import { Budget, Expense } from "../../../models/models";
 import { v4 as uuidv4 } from "uuid";
 import { NextRequest, NextResponse } from "next/server";
-import { error } from "console";
 import dynamoose from "@/app/lib/dynamoose";
 
 export async function GET(req: NextRequest) {
@@ -57,11 +56,25 @@ export async function GET(req: NextRequest) {
         }
       >
     );
+    const fullBudgetList = budgets.map((budget) => {
+      const matched = budgetTotals[budget.expenseId];
+      return (
+        matched ?? {
+          totalSpent: 0,
+          name: budget.name,
+          icon: budget.icon,
+          amount: budget.amount,
+          expenseId: budget.expenseId,
+        }
+      );
+    });
+    console.log("this is the parti expense", fullBudgetList);
+
     const budgetSummaryArray = Object.values(budgetTotals);
 
     console.log("this is the parti expense", budgetSummaryArray);
     console.log("this is data", data);
-    return NextResponse.json({ data: budgetSummaryArray });
+    return NextResponse.json({ data: fullBudgetList });
   } catch (error) {
     console.log("error while fetching data", error);
     return NextResponse.json(
@@ -100,44 +113,27 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Missing Parameters" }, { status: 400 });
   }
   try {
-    // const ddb = dynamoose.aws.ddb();
-    // const allExpense = await Expense.scan("userId").eq(userId).exec();
+    const allExpenses = await Expense.scan("userId").eq(userId).exec();
+    const relatedExpenses = allExpenses.filter(
+      (item) => item.BudgetId === expenseId
+    );
+    console.log(relatedExpenses);
 
-    // const relatedExp = allExpense.filter((item) => item.BudgetId === expenseId);
-
-    // const deleteOperations = relatedExp.map((expense) => ({
-    //   Delete: {
-    //     TableName: Expense.name,
-    //     Key: {
-    //       userId: expense.userId,
-    //       SingleExpenseId: expense.SingleExpenseId,
-    //     },
-    //   },
-    // }));
-    // deleteOperations.push({
-    //   Delete: {
-    //     TableName: Budget.name,
-    //     Key: {
-    //       userId,
-    //       expenseId,
-    //     },
-    //   },
-    // });
-    // await dynamoose.transaction(deleteOperations);
-    const budgetDeleteOp = Budget.transaction.delete({ userId, expenseId });
-
-    const expenseItems = await Expense.query("BudgetId").eq(expenseId).exec();
-
-    const expenseDeleteOps = (expenseItems || []).map((item) =>
+    const deleteExpenseOps = relatedExpenses.map((expense) =>
       Expense.transaction.delete({
-        userId: item.userId,
-        SingleExpenseId: item.SingleExpenseId,
+        userId: expense.userId,
+        SingleExpenseId: expense.SingleExpenseId,
       })
     );
+    const deleteBudgetOp = Budget.transaction.delete({
+      userId,
+      expenseId,
+    });
 
-    const deleteOperations = [budgetDeleteOp, ...expenseDeleteOps];
+    await dynamoose.transaction([...deleteExpenseOps, deleteBudgetOp]);
     return NextResponse.json({
       message: "Budget and its related expenses (if any) deleted successfully",
+      status: 200,
     });
   } catch (err) {
     console.log(err);

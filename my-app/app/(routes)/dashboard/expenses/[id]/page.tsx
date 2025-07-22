@@ -63,12 +63,10 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
         method: "DELETE",
       });
       const result = await res.json();
-      if (result.ok) {
-        toast("Deleted the budget successully");
-        window.location.href = "/budgets";
-      } else {
-        toast("Failed to delete the budget", result);
-      }
+      console.log("this is the delete res", result);
+
+      toast("Deleted the budget successully");
+      window.location.href = "/dashboard/budgets";
     } catch (err) {
       console.log(err);
       // toast(err);
@@ -99,7 +97,7 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={() => deleteBudget()}>
-                  Continue
+                  Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
