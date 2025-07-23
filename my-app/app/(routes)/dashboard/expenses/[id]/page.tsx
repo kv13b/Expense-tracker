@@ -5,7 +5,7 @@ import BudgetItem from "../../budgets/_components/BudgetItem";
 import AddExpense from "./_components/AddExpense";
 import ExpenseList from "./_components/ExpenseList";
 import { use } from "react";
-import { Trash } from "lucide-react";
+import { PenBox, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import EditBudget from "./_components/EditBudget";
 type ExpenseParams = {
   id: string;
 };
@@ -77,31 +78,34 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
       <h2 className="text-2xl font-bold flex justify-between items-center">
         My Expense
         <span>
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button
-                className="my-2 flex gap-2 cursor-pointer"
-                variant="destructive"
-              >
-                <Trash /> Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permenatly delete the current budget along with the
-                  expenseList
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteBudget()}>
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <div className=" flex gap-2 items-center">
+            <EditBudget budgetList={budgetList} />
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button
+                  className="my-2 flex gap-2 cursor-pointer"
+                  variant="destructive"
+                >
+                  <Trash /> Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permenatly delete the current budget along with
+                    the expenseList
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteBudget()}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-5">
