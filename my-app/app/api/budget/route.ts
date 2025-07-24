@@ -143,3 +143,28 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+export async function PATCH(req: NextRequest) {
+  const body = await req.json();
+  console.log(body);
+  try {
+    const { Name, icon, amount, expenseId, userid } = body;
+    const result = await Budget.update({
+      expenseId: expenseId,
+      userId: userid,
+      name: Name,
+      icon,
+      amount,
+      updatedAt: new Date().toISOString(),
+    });
+    return NextResponse.json({
+      message: "Budget udpated successfully",
+      budget: result,
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: "Failed to update budget" },
+      { status: 500 }
+    );
+  }
+}

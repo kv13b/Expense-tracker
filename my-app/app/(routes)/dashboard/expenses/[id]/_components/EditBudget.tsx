@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { PenBox } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,18 +14,62 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import EmojiPicker from "emoji-picker-react";
+import { getCookie } from "cookies-next/client";
+import { toast } from "sonner";
 type BudgetType = {
   icon: string;
-  Name: string;
+  name: string;
   amount: number;
+  expenseId: string;
 };
-function EditBudget({ budgetList }: { budgetList: BudgetType }) {
-  const [EmojiIcon, setEmojiIcon] = useState(budgetList.icon);
+function EditBudget({
+  budgetList,
+  RefreshExpense,
+}: {
+  budgetList: BudgetType;
+  RefreshExpense: () => void;
+}) {
+  const [EmojiIcon, setEmojiIcon] = useState(budgetList?.icon);
   const [OpenEmojiPicker, setOpenEmojiPicker] = useState(false);
-  const [Name, setName] = useState("");
-  const [amount, setAmount] = useState("");
+  const [Name, setName] = useState(budgetList.name);
+  const [amount, setAmount] = useState(budgetList.amount);
   const [open, setOpen] = useState(false);
-  const onUpdateBudget = () => {};
+  const onUpdateBudget = async (e: any) => {
+    e.preventDefault();
+    const userid = getCookie("userid");
+    const data = {
+      userid,
+      Name,
+      amount: Number(amount),
+      icon: EmojiIcon,
+      expenseId: budgetList.expenseId,
+    };
+    try {
+      const res = await fetch(`/api/budget/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update ");
+      }
+      console.log(res);
+      toast("Budget Updted Successfully");
+      RefreshExpense();
+    } catch (err) {
+      console.log(err);
+      toast("Error updating budget" + err);
+    }
+  };
+  useEffect(() => {
+    if (budgetList) {
+      setEmojiIcon(budgetList?.icon);
+      setAmount(budgetList.amount);
+      setName(budgetList.name);
+    }
+  }, []);
   console.log(budgetList);
   return (
     <div>
@@ -61,7 +105,7 @@ function EditBudget({ budgetList }: { budgetList: BudgetType }) {
                   <h2 className="text-black font-medium my-1">Budget Name</h2>
                   <Input
                     placeholder="Ex:Grocery Budget"
-                    defaultValue={budgetList.Name}
+                    defaultValue={budgetList.name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -74,7 +118,7 @@ function EditBudget({ budgetList }: { budgetList: BudgetType }) {
                     onChange={(e) => setAmount(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && Name && amount) {
-                        handleSubmit(e);
+                        onUpdateBudget(e);
                       }
                     }}
                   />
