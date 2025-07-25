@@ -24,9 +24,11 @@ type BudgetType = {
 };
 function EditBudget({
   budgetList,
+  onExpenseAdded,
   RefreshExpense,
 }: {
   budgetList: BudgetType;
+  onExpenseAdded: () => void;
   RefreshExpense: () => void;
 }) {
   const [EmojiIcon, setEmojiIcon] = useState(budgetList?.icon);
@@ -57,6 +59,8 @@ function EditBudget({
       }
       console.log(res);
       toast("Budget Updted Successfully");
+      setOpen(false);
+      onExpenseAdded();
       RefreshExpense();
     } catch (err) {
       console.log(err);
@@ -92,15 +96,17 @@ function EditBudget({
                 >
                   {EmojiIcon}
                 </Button>
-                <div className="absolute z-20">
-                  <EmojiPicker
-                    open={OpenEmojiPicker}
-                    onEmojiClick={(e) => {
-                      setEmojiIcon(e.emoji);
-                      setOpenEmojiPicker(false);
-                    }}
-                  />
-                </div>
+                {OpenEmojiPicker && (
+                  <div className="absolute z-20">
+                    <EmojiPicker
+                      // open={OpenEmojiPicker}
+                      onEmojiClick={(e) => {
+                        setEmojiIcon(e.emoji);
+                        setOpenEmojiPicker(false);
+                      }}
+                    />
+                  </div>
+                )}
                 <div className="my-2">
                   <h2 className="text-black font-medium my-1">Budget Name</h2>
                   <Input

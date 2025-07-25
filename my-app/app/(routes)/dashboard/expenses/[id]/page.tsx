@@ -81,6 +81,7 @@ function Expenses({ params }: { params: Promise<ExpenseParams> }) {
           <div className=" flex gap-2 items-center">
             <EditBudget
               budgetList={budgetList}
+              onExpenseAdded={fetchBudgets}
               RefreshExpense={GetExpenseList}
             />
             <AlertDialog>
