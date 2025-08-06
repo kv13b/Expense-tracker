@@ -15,13 +15,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { getCookie } from "cookies-next/client";
+import { Loader } from "lucide-react";
 function CreateBudget({ refreshData }) {
   const [EmojiIcon, setEmojiIcon] = useState("😀");
   const [OpenEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [Name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [open, setOpen] = useState(false);
+  const [Loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const userid = getCookie("userid");
     const data = {
@@ -37,10 +40,12 @@ function CreateBudget({ refreshData }) {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
+        setLoading(true);
         const errorData = await response.json();
         toast(errorData.error || "Failed to create budget");
         return;
       }
+      setLoading(false);
       setName("");
       setAmount("");
       setEmojiIcon("😀");
@@ -90,6 +95,7 @@ function CreateBudget({ refreshData }) {
                 <h2 className="text-black font-medium my-1">Budget Name</h2>
                 <Input
                   placeholder="Ex:Grocery Budget"
+                  value={Name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
@@ -98,6 +104,7 @@ function CreateBudget({ refreshData }) {
                 <Input
                   type="number"
                   placeholder="Ex:₹5000"
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && Name && amount) {
@@ -116,7 +123,7 @@ function CreateBudget({ refreshData }) {
               className="mt-5 w-full"
               onClick={handleSubmit}
             >
-              Create Budget
+              {Loading ? <Loader className="animate-spin" /> : "Create Budget"}
             </Button>
           </DialogClose>
         </DialogFooter>
