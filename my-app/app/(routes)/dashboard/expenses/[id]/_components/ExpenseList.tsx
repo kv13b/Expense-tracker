@@ -14,8 +14,8 @@ const ExpenseList = ({
   RefreshExpense,
 }: {
   expenses: ExpenseItem[];
-  onLoad: () => void;
-  RefreshExpense: () => void;
+  onLoad?: () => void;
+  RefreshExpense?: () => void;
 }) => {
   const DeleteExpense = async (expense: any) => {
     const userid = getCookie("userid");

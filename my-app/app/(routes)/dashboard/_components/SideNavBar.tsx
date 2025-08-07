@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { LayoutGrid, PiggyBank, ReceiptText, ShieldCheck } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -35,7 +35,7 @@ function SideNavBar() {
   const path = usePathname();
   useEffect(() => {
     console.log(path);
-  }, []);
+  }, [path]);
   return (
     <div className="h-screen p-5 border shadow-sm">
       <Image src={"/logo.svg"} alt="logo" height={100} width={120} />

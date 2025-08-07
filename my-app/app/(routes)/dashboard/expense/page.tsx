@@ -25,11 +25,11 @@ function Expense() {
   return (
     <div className="mt-4">
       <h2 className="font-bold text-lg">All Your Expenses</h2>
-      {/* <ExpenseList
+      <ExpenseList
         expenses={expenseList}
-        onLoad={fetchBudgets}
-        RefreshExpense={GetExpenseList}
-      /> */}
+        // onLoad={fetchBudgets}
+        // RefreshExpense={GetExpenseList}
+      />
     </div>
   );
 }

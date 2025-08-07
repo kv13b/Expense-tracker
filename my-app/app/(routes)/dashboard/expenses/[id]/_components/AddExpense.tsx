@@ -53,6 +53,7 @@ function AddExpense({
           <h2 className="text-black font-medium my-1">Expense Name</h2>
           <Input
             placeholder="Ex:Monthly Expense"
+            value={Name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
@@ -66,6 +67,7 @@ function AddExpense({
                 handleSubmit(e);
               }
             }}
+            value={amount}
           />
         </div>
       </div>

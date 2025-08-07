@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [_username, setUsername] = useState(""); //_ for vercel failed deployment
   const router = useRouter();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
