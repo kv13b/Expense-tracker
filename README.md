@@ -56,6 +56,9 @@ To run this project, you will need to add the following environment variables to
 
 - [@kv13b](https://github.com/kv13b)
 
+## screenshot
+<img width="1400" height="700" alt="image" src="https://github.com/user-attachments/assets/f2b21cb8-c86e-41d9-bf3b-42c45c1e1e6b" />
+
 
 ## Feedback
 
